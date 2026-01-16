@@ -1,0 +1,70 @@
+{% extends 'doctorbase.html' %}
+{% load static %}
+{% block doctor %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h2 class="text-center mb-4">All Appointments</h2>
+
+        {% if appointments %}
+            <table class="table table-bordered table-hover text-center align-middle">
+                <thead style="background-color: #0d6efd; color: white;">
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Symptoms</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Doctor</th>
+                        <th>Speciality</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in appointments %}
+                        <tr>
+                            <td>{{ app.name }}</td>
+                            <td>{{ app.email }}</td>
+                            <td>{{ app.contact }}</td>
+                            <td>{{ app.symptoms }}</td>
+                            <td>{{ app.appointment_date }}</td>
+                            <td>{{ app.appointment_time }}</td>
+                            <td>{{ app.doctor.doctor_name }}</td>
+                            <td>{{ app.doctor_speciality }}</td>
+                            <td>
+                                {% if app.status == 'COMPLETED' %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% elif app.status == 'PROCESSING' %}
+                                    <span class="badge bg-primary">Processing</span>
+                                {% elif app.status == 'REJECTED' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if app.status == 'PENDING' %}
+                                    <a href="{% url 'doctorapp:markaproove' app.id %}" class="btn btn-sm btn-success mb-2">Approve</a>
+                                    <a href="{% url 'doctorapp:rescheduleappointment' app.id %}" class="btn btn-sm btn-secondary mb-2">Reschedule</a>
+                                    <a href="{% url 'doctorapp:rejectappointment' app.id %}" class="btn btn-sm btn-warning mb-2">Reject</a>
+                                {% elif app.status == 'PROCESSING' %}
+                                    <a href="{% url 'doctorapp:completeappointment' app.id %}" class="btn btn-sm btn-success mb-2">Complete</a>
+                                {% endif %}
+
+                                <a href="{% url 'doctorapp:deleteappointment' app.id %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info text-center">No appointments found.</div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

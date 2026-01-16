@@ -1,0 +1,33 @@
+{% extends 'adminbase.html' %}
+{% block title %}Add Notification{% endblock %}
+{% block admin %}
+<div class="container mt-4">
+    <h2>Add Notification</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="message">Notification Message:</label>
+            <textarea name="message" id="message" rows="4" class="form-control" required></textarea>
+        </div>
+
+        {% comment %} <label>Send To:</label><br>
+        <div class="form-check">
+            <input type="checkbox" name="send_to" value="staff" class="form-check-input" id="staff">
+            <label class="form-check-label" for="staff">Staff</label>
+        </div> {% endcomment %}
+        {% comment %} <div class="form-check">
+            <input type="checkbox" name="send_to" value="doctor" class="form-check-input" id="doctor">
+            <label class="form-check-label" for="doctor">Doctor</label>
+        </div> {% endcomment %}
+
+        <button type="submit" class="btn btn-primary mt-3">Send Notification</button>
+    </form>
+</div>
+{% endblock %}

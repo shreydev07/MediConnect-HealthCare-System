@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: rgb(112, 45, 251);
+            --primary-hover: rgb(92, 36, 211);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            background-color: var(--primary);
+            min-height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-nav, .sidebar-dropdown {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .sidebar-header {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 1.5rem 1.5rem 0.5rem;
+        }
+
+        .sidebar-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: var(--primary-hover);
+            color: #fff;
+        }
+
+        .sidebar-link i {
+            width: 1.5rem;
+        }
+
+        .sidebar-dropdown {
+            padding-left: 2rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .main {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+
+        .navbar {
+            background-color: var(--primary);
+            color: #fff;
+        }
+
+        .sidebar-toggle {
+            color: #fff;
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                margin-left: -280px;
+            }
+
+            #sidebar.active {
+                margin-left: 0;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .main.shifted {
+                margin-left: var(--sidebar-width);
+            }
+        }
+
+        .card {
+            background-color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 1rem;
+        }
+
+        .container-fluid table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #e0f2f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper d-flex">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <div class="h-100">
+                <div class="sidebar-logo">
+                    <a href="#" class="text-white text-decoration-none">Admin Panel</a>
+                </div>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-header">Admin Elements</li>
+                    <li class="sidebar-item">
+                        <a href="{% url 'adminapp:adminhome' %}" class="sidebar-link active">
+                            <i class="fas fa-tachometer-alt pe-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{% url 'adminapp:viewstaffrequest' %}" class="sidebar-link">
+                            <i class="fas fa-question-circle pe-2"></i> View Staff Requests
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{% url 'adminapp:viewdoctorrequest' %}" class="sidebar-link">
+                            <i class="fas fa-question-circle pe-2"></i> View Doctor Requests
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{% url 'adminapp:viewcomplaints' %}" class="sidebar-link">
+                            <i class="fas fa-comments pe-2"></i> View Complaints
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{% url 'adminapp:addnotification' %}" class="sidebar-link">
+                            <i class="fas fa-bell pe-2"></i> Add Notification
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main w-100" id="main-content">
+            <nav class="navbar navbar-expand px-3 border-bottom">
+                <button class="btn sidebar-toggle" id="toggle-btn" type="button">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle text-white">
+                                <i class="fas fa-user-circle me-1"></i> 
+                                {% if request.session.adminid %}
+                                    {{ request.session.adminid }}
+                                {% else %}
+                                    Admin
+                                {% endif %}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a href="#" class="dropdown-item"><i class="fas fa-user me-2"></i>Profile</a>
+                                <a href="#" class="dropdown-item"><i class="fas fa-cog me-2"></i>Setting</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{% url 'adminapp:adminlogout' %}" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="content px-3 py-4">
+                <div class="container-fluid">
+                    {% if messages %}
+                        <div class="container mt-3">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% block admin %}
+                    {% endblock %}
+                </div>
+            </main>
+
+            <footer class="footer text-end">
+                <div class="container-fluid">
+                    <p class="mb-0 text-muted">
+                        {% comment %} <strong>&copy; All Right Reserved</strong> {% endcomment %}
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggleBtn = document.getElementById('toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main-content');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            main.classList.toggle('shifted');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Book Appointment</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Patient Name</label>
+            <input type="text" name="patient_name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Phone</label>
+            <input type="text" name="patient_phone" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Describe Your Disease</label>
+            <textarea name="disease" class="form-control" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label>Choose Speciality</label>
+            <select name="doctor_speciality" class="form-select" onchange="this.form.submit()">
+                <option value="">Select Speciality</option>
+                {% for spec in specialities %}
+                    <option value="{{ spec }}" {% if selected_speciality == spec %}selected{% endif %}>{{ spec }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if doctors %}
+        <div class="mb-3">
+            <label>Select Doctor</label>
+            <select name="doctor_id" class="form-select" required>
+                {% for doctor in doctors %}
+                    <option value="{{ doctor.doctor_id }}">{{ doctor.doctor_name }} ({{ doctor.doctor_phone }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        {% if selected_speciality and doctors %}
+        <button type="submit" class="btn btn-success">Book Appointment</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
